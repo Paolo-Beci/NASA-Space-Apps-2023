@@ -4,6 +4,7 @@ import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 import { Map as MapGL } from "react-map-gl";
 import { ParticleLayer } from "deck.gl-particle";
 import { ScatterplotLayer } from "@deck.gl/layers";
+import Sidebar from './Sidebar';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN =
@@ -18,7 +19,7 @@ const TURIN = {
   bearing: 0,
 };
 
-function Map() {
+function StandardMap() {
   const [heatmapVisible, setHeatmapVisible] = useState(true);
   const [scatterplotVisible, setScatterplotVisible] = useState(false);
   const [viewState, setViewState] = useState({ ...TURIN });
@@ -70,6 +71,13 @@ function Map() {
     }),
   ];
 
+  // Sidebar
+  const [openSidebar, setOpenSidebar] = useState(true);
+
+  const toggleSidebar = () => {
+    setOpenSidebar(!openSidebar);
+  };
+
   return (
     <DeckGL viewState={viewState} onViewStateChange={updateViewState} controller={true} layers={layers}>
       {/* <MapGL
@@ -77,6 +85,8 @@ function Map() {
         mapStyle="mapbox://styles/frossipolito/clnggfckp040i01r76ce3cqxa"
         
       /> */}
+      <Sidebar open={openSidebar} toggleSidebar={toggleSidebar} />
+      
       <MapGL
         mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
         mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
@@ -85,4 +95,4 @@ function Map() {
   );
 }
 
-export default Map;
+export default StandardMap;
