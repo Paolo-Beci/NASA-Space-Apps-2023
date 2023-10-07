@@ -4,6 +4,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 
 // IMPORT PAGES
 import StandardMap from "./StandardMap";
@@ -15,8 +16,12 @@ function App() {
   return (
     <Router>
     <>
-      <AppBar position="absolute" open={open}>
+      <AppBar position="absolute" sx={{ backgroundColor: '#3A3B3C' }} >
         <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="logo">
+            <img src="../public/logo.png" alt="Logo" style={{ height: '40px', width: 'auto' }} />
+          </IconButton>
+
           <Typography
             component="h1"
             variant="h6"
