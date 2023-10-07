@@ -7,7 +7,3 @@
 .map-container {
   height: 400px;
 }
-
-.mapboxgl-ctrl-logo, .mapboxgl-ctrl-bottom-right {
-  display: none !important;
-}

@@ -1,6 +1,7 @@
 import DeckGL from "@deck.gl/react";
 import { LineLayer } from "@deck.gl/layers";
 import { Map } from "react-map-gl";
+import { ParticleLayer } from "deck.gl-particle";
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN =
@@ -8,9 +9,9 @@ const MAPBOX_ACCESS_TOKEN =
 
 // Viewport settings
 const INITIAL_VIEW_STATE = {
-  longitude: -122.41669,
-  latitude: 37.7853,
-  zoom: 13,
+  longitude: 7.6869,
+  latitude: 45.0703 ,
+  zoom: 12,
   pitch: 0,
   bearing: 0,
 };
@@ -24,7 +25,37 @@ const data = [
 ];
 
 function App() {
-  const layers = [new LineLayer({ id: "line-layer", data })];
+  const config = {
+    rotate: false,
+    particle: {
+      numParticles: 5000,
+      maxAge: 50,
+      speedFactor: 10,
+      color: [127, 127, 127],
+      width: 1,
+      opacity: 1,
+      animate: true,
+    },
+  };
+  const layers = [
+    new LineLayer({ id: "line-layer", data }),
+    new ParticleLayer({
+      id: "particle",
+      // data properties
+      image: "/wind_data.png",
+      imageUnscale: [-128, 127],
+      bounds: [-180, -90, 180, 90],
+      // style properties
+      numParticles: config.particle.numParticles,
+      maxAge: config.particle.maxAge,
+      speedFactor: config.particle.speedFactor,
+      color: config.particle.color,
+      width: config.particle.width,
+      opacity: config.particle.opacity,
+      animate: config.particle.animate,
+      getPolygonOffset: () => [0, -1000],
+    }),
+  ];
 
   return (
     <DeckGL
@@ -32,7 +63,10 @@ function App() {
       controller={true}
       layers={layers}
     >
-      <Map mapboxAccessToken={MAPBOX_ACCESS_TOKEN} />
+      <Map
+        mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
+        mapStyle="mapbox://styles/mapbox/streets-v9"
+      />
     </DeckGL>
   );
 }
