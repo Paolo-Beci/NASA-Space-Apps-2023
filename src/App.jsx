@@ -59,6 +59,7 @@ function App() {
       <Routes>
         <Route path="/standard-map" element={<StandardMap />} />
         <Route path="/admin-map" element={<AdminMap />} />
+        <Route path="/report" element={<Report />} />
         <Route path="/" element={<Home />} />
         <Route path="*" element={<h1>404</h1>} />
       </Routes>

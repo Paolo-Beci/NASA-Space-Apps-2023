@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import DeckGL from "@deck.gl/react";
+import React, {useRef, useCallback, useState} from 'react';import DeckGL from "@deck.gl/react";
 import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 import { Map as MapGL } from "react-map-gl";
 import { ParticleLayer } from "deck.gl-particle";
@@ -38,19 +37,6 @@ function StandardMap() {
     }
   }
 
-  const handleScatterClick = (info) => {
-    console.log("DIOCANE "+ info);
-    const clickedPoint = info.object;
-    if (clickedPoint) {
-      setViewState({
-        ...viewState,
-        longitude: clickedPoint.position[0], // Update the view to the clicked point
-        latitude: clickedPoint.position[1],
-      });
-      setOpenSidebar(true); // Open the sidebar
-    }
-  };
-
   const layers = [
     new ScatterplotLayer({
       id: "scatter",
@@ -61,16 +47,6 @@ function StandardMap() {
       getFillColor: () => [255, 140, 0],
       getLineColor: () => [0, 0, 0],
       visible: scatterplotVisible,
-      onClick: (info) => {
-        if (info.object) {
-          setViewState({
-            ...viewState,
-            longitude: info.object.position[0], // Update the view to the clicked point
-            latitude: info.object.position[1],
-          });
-          setOpenSidebar(true); // Open the sidebar
-        }
-      },
     }),
     new HeatmapLayer({
       id: "hexagon-layer",
@@ -101,20 +77,19 @@ function StandardMap() {
     setOpenSidebar(!openSidebar);
   };
 
+  const onClick = useCallback(event => {
+    setOpenSidebar(true);
+  }, [])
+
   return (
-    <DeckGL viewState={viewState} onViewStateChange={updateViewState} controller={true} layers={layers}>
-      {/* <MapGL
-        mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
-        mapStyle="mapbox://styles/frossipolito/clnggfckp040i01r76ce3cqxa"
+      <DeckGL viewState={viewState} onViewStateChange={updateViewState} controller={true} layers={layers} onClick={onClick}>
+        <Sidebar open={openSidebar} toggleSidebar={toggleSidebar} />
         
-      /> */}
-      <Sidebar open={openSidebar} toggleSidebar={toggleSidebar} />
-      
-      <MapGL
-        mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
-        mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
-      />
-    </DeckGL>
+        <MapGL
+          mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
+          mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
+        />
+      </DeckGL>
   );
 }
 
