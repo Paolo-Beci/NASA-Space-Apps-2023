@@ -1,16 +1,17 @@
-import React, {useRef, useCallback, useState} from 'react';import DeckGL from "@deck.gl/react";
+import React, { useCallback, useState } from 'react';import DeckGL from "@deck.gl/react";
 import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 import { Map as MapGL } from "react-map-gl";
 import { ParticleLayer } from "deck.gl-particle";
 import { ScatterplotLayer } from "@deck.gl/layers";
 import Sidebar from './Sidebar';
+import { useEffect } from 'react';
 
 // Set your mapbox access token here
 const MAPBOX_ACCESS_TOKEN =
   "pk.eyJ1IjoiZnJvc3NpcG9saXRvIiwiYSI6ImNsbmdhcW9vNzB5bXkyaW1uN2FnbjFoNm8ifQ.wRLvsqv8fbUst9qUM_EuUA";
 
-// Viewport settings
-const TURIN = {
+// Initial viewport settings
+const POSITION = {
   longitude: 7.6869,
   latitude: 45.0703,
   zoom: 12,
@@ -18,13 +19,13 @@ const TURIN = {
   bearing: 0,
 };
 
-function StandardMap() {
+function StandardMap(props) {
   const [heatmapVisible, setHeatmapVisible] = useState(true);
   const [scatterplotVisible, setScatterplotVisible] = useState(false);
-  const [viewState, setViewState] = useState({ ...TURIN });
+  const [viewState, setViewState] = useState({ ...POSITION });
 
-   // Sidebar
-   const [openSidebar, setOpenSidebar] = useState(false);
+  // Sidebar
+  const [openSidebar, setOpenSidebar] = useState(false);
 
   const updateViewState = (e) => {
     setViewState(e.viewState);
@@ -81,6 +82,16 @@ function StandardMap() {
     setOpenSidebar(true);
   }, [])
 
+  useEffect(() => {
+    setViewState({
+      longitude: props.longitude,
+      latitude: props.latitude,
+      zoom: 12,
+      pitch: 0,
+      bearing: 0,
+    });
+  } , [props.latitude, props.longitude]);
+
   return (
       <DeckGL viewState={viewState} onViewStateChange={updateViewState} controller={true} layers={layers} onClick={onClick}>
         <Sidebar open={openSidebar} toggleSidebar={toggleSidebar} />
@@ -88,7 +99,9 @@ function StandardMap() {
         <MapGL
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
           mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
-        />
+        >
+        </MapGL>
+        {/* TO DO marker for current position */}
       </DeckGL>
   );
 }

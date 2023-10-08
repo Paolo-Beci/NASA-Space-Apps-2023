@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,6 +13,27 @@ import Home from "./Home";
 import Report from "./Report";
 
 function App() {
+
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const userLatitude = position.coords.latitude;
+        const userLongitude = position.coords.longitude;
+
+        setLatitude(userLatitude);
+        setLongitude(userLongitude);
+      }, function (error) {
+        // Handle any errors here
+        console.error('Error getting user location:', error);
+      });
+    } else {
+      console.error('Geolocation is not available in this browser.');
+    }
+  }, []);
+
   return (
     <Router>
     <>
@@ -57,8 +78,8 @@ function App() {
       </AppBar>
 
       <Routes>
-        <Route path="/standard-map" element={<StandardMap />} />
-        <Route path="/admin-map" element={<AdminMap />} />
+        <Route path="/standard-map" element={<StandardMap latitude={latitude} longitude={longitude} />} />
+        <Route path="/admin-map" element={<AdminMap latitude={latitude} longitude={longitude} />} />
         <Route path="/report" element={<Report />} />
         <Route path="/" element={<Home />} />
         <Route path="*" element={<h1>404</h1>} />
